@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt')
 const User = bookshelf.model('User', {
     tableName: 'users',
     hasTimestamps: true,
-    hidden: ['password'],
 
     initialize() {
         this.on('saving', model => {
@@ -18,6 +17,11 @@ const User = bookshelf.model('User', {
                 model.set({ password: bcrypt.hashSync(model.get('password'), 10) })
             }
         })
+    },
+
+    checkPassword: function (password) {
+        const correct = bcrypt.compareSync(password, this.get('password'))
+        return correct
     }
 })
 
