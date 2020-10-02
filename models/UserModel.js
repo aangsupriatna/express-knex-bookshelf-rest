@@ -18,10 +18,6 @@ const User = bookshelf.model('User', {
                 model.set({ password: bcrypt.hashSync(model.get('password'), 10) })
             }
         })
-
-        this.on('updating', (model) => {
-            model.set({ role: model.get('role') })
-        })
     },
 
     checkPassword: function (password) {
