@@ -8,7 +8,7 @@ module.exports = {
             .then(user => {
                 return res.status(200).json(user)
             }).catch(error => {
-                return res.status(500).json(error)
+                return res.status(500).json({ error: 'Fetch users error' })
             })
     },
     // store new user
@@ -17,7 +17,7 @@ module.exports = {
             const { username, email, password, password2 } = req.body
 
             if (password != password2) {
-                return res.status(401).json({ message: 'Password not match' })
+                return res.status(401).json({ error: 'Password not match' })
             }
 
             const user = await new User({
@@ -29,7 +29,11 @@ module.exports = {
 
             return res.status(200).json(user)
         } catch (error) {
-            return res.status(500).json(error)
+            if (error.code == 'ER_DUP_ENTRY') {
+                return res.status(400).json({ error: 'User already exists' })
+            } else {
+                return res.status(400).json({ error: 'Added user error' })
+            }
         }
     },
     // display one user
@@ -40,7 +44,7 @@ module.exports = {
             .then(user => {
                 return res.status(200).json(user)
             }).catch(error => {
-                return res.status(400).json({ message: 'Getting user error', error })
+                return res.status(400).json({ error: 'Getting user error' })
             })
     },
     // update user
@@ -50,7 +54,7 @@ module.exports = {
             const id = req.params.id
 
             if (password && password != password2) {
-                return res.status(400).json({ message: 'Password not match' })
+                return res.status(400).json({ error: 'Password not match' })
             }
 
             const user = await User.where({ id: id }).fetch().then(user => {
@@ -62,22 +66,20 @@ module.exports = {
                 })
                 return user.save()
             })
-
             return res.status(200).json(user)
 
         } catch (error) {
-            return res.status(400).json({ message: 'Update user error' })
+            return res.status(400).json({ error: 'Update user error' })
         }
     },
     // delete user
     destroy: async (req, res) => {
         try {
             const id = req.params.id
-
-            const user = await new User({ id: id }).destroy()
-            return res.status(200).json(user)
+            await new User({ id: id }).destroy()
+            return res.status(200).json({ message: 'User destroyed' })
         } catch (error) {
-            return res.status(400).json({ message: error.message })
+            return res.status(400).json({ error: error.message })
         }
     }
 }

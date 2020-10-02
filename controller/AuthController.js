@@ -29,27 +29,28 @@ module.exports = {
     },
 
     signUp: async (req, res) => {
-        const { username, email, password, password2 } = req.body
+        try {
+            const { username, email, password, password2 } = req.body
 
-        if (password != password2) {
-            return res.status(401).json({ message: 'Password not match' })
-        }
+            if (password != password2) {
+                return res.status(401).json({ error: 'Password not match' })
+            }
 
-        await userModel.query()
-            .insert({
+            const user = await new User({
                 username: username,
                 email: email,
                 password: password,
                 role: 'member'
-            }).then(newuser => {
-                return res.status(200).json({ newuser, message: 'New user added' })
-            }).catch(error => {
-                if (error.nativeError.code == 'ER_DUP_ENTRY') {
-                    return res.status(400).json({ message: 'User already exists' })
-                } else {
-                    return res.status(400).json({ message: 'Signup error' })
-                }
-            })
+            }).save()
+
+            return res.status(200).json(user)
+        } catch (error) {
+            if (error.code == 'ER_DUP_ENTRY') {
+                return res.status(400).json({ error: 'User already exists' })
+            } else {
+                return res.status(400).json({ error: 'Signup error' })
+            }
+        }
     },
 
     signOut: async (req, res) => {
@@ -60,7 +61,7 @@ module.exports = {
                     message: 'Token destroyed'
                 })
         } catch (error) {
-            return res.status(400).json({ message: 'Signout error' })
+            return res.status(400).json({ error: 'Signout error' })
         }
     }
 }

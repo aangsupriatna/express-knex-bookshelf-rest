@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const User = bookshelf.model('User', {
     tableName: 'users',
     hasTimestamps: true,
+    hidden: ['password'],
 
     initialize() {
         this.on('saving', model => {
@@ -16,6 +17,10 @@ const User = bookshelf.model('User', {
             if (model.get('password')) {
                 model.set({ password: bcrypt.hashSync(model.get('password'), 10) })
             }
+        })
+
+        this.on('updating', (model) => {
+            model.set({ role: model.get('role') })
         })
     },
 
