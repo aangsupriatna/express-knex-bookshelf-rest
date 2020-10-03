@@ -40,7 +40,7 @@ module.exports = {
     show: async (req, res) => {
         const id = req.params.id
 
-        await User.where({ id: id }).fetch()
+        await new User({ id: id }).fetch({ withRelated: ['profile'] })
             .then(user => {
                 return res.status(200).json(user)
             }).catch(error => {

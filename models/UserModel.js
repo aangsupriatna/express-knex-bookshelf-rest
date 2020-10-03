@@ -1,10 +1,15 @@
 const bookshelf = require('../bookshelf')
 const bcrypt = require('bcrypt')
+const UserProfile = require('./UserProfileModel')
 
 const User = bookshelf.model('User', {
     tableName: 'users',
     hasTimestamps: true,
     hidden: ['password'],
+
+    profile() {
+        return this.hasOne(UserProfile)
+    },
 
     initialize() {
         this.on('saving', model => {
