@@ -26,8 +26,8 @@ const User = bookshelf.model('User', {
     },
 
     checkPassword: function (password) {
-        const correct = bcrypt.compareSync(password, this.get('password'))
-        return correct
+        return bcrypt.compareSync(password, this.get('password'))
+        // return correct
     }
 })
 
