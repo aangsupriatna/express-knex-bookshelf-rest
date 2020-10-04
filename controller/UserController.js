@@ -3,12 +3,12 @@ const User = require('../models/UserModel')
 
 async function get(req, res) {
     try {
-        const user = await User.fetchAll({ withRelated: ['profile'] })
+        const user = await User.fetchAll({ debug: true, withRelated: ['profile'] })
         if (user) {
-            return res.status(200).json(user)
+            return res.ok(user, { message: 'Fetch all users success' })
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Fetch users error' })
+        return res.error(500, { message: 'Fetch all users error' })
     }
 }
 
@@ -17,7 +17,7 @@ async function store(req, res) {
         const { username, email, password, password2 } = req.body
 
         if (password != password2) {
-            return res.status(401).json({ error: 'Password not match' })
+            return res.error(401, { message: 'Password not match' })
         }
         const user = await new User({
             username: username,
@@ -25,12 +25,12 @@ async function store(req, res) {
             password: password,
             role: 'member'
         }).save()
-        return res.status(200).json(user)
+        return res.ok(user, { message: 'New user added' })
     } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({ error: 'User already exists' })
+            return res.error(401, { message: 'User already exists' })
         } else {
-            return res.status(400).json({ error: 'Insert new user error' })
+            return res.error(401, { message: 'Insert new user error' })
         }
     }
 }
@@ -42,10 +42,10 @@ async function show(req, res) {
             withRelated: ['profile']
         })
         if (user) {
-            return res.status(200).json(user)
+            return res.ok(user, { message: 'Fetch user success' })
         }
     } catch (error) {
-        return res.status(400).json({ error: 'Getting user error' })
+        return res.error(400, { message: 'Getting user error' })
     }
 }
 
@@ -55,7 +55,7 @@ async function update(req, res) {
         const { username, email, password, password2, role } = req.body
 
         if (password && password != password2) {
-            return res.status(400).json({ error: 'Password not match' })
+            return res.error(400, { message: 'Password not match' })
         }
         const user = await User.where({ id: id }).fetch().then(user => {
             user.set({
@@ -66,9 +66,9 @@ async function update(req, res) {
             })
             return user.save()
         })
-        return res.status(200).json(user)
+        return res.ok(user, { message: 'User updated' })
     } catch (error) {
-        return res.status(400).json({ error: 'Update user error' })
+        return res.error(400, { message: 'Update user error' })
     }
 }
 
@@ -76,9 +76,9 @@ async function destroy(req, res) {
     try {
         const id = req.params.id
         await new User({ id: id }).destroy()
-        return res.status(200).json({ message: 'User destroyed' })
+        return res.ok(id, { message: 'User destroyed' })
     } catch (error) {
-        return res.status(400).json({ error: error.message })
+        return res.error(400, { message: error.message })
     }
 }
 
