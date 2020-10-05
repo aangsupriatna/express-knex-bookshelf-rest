@@ -4,10 +4,10 @@ async function get(req, res) {
     try {
         const companies = await Company.fetchAll({ withRelated: ['projects'] })
         if (companies) {
-            return res.status(200).json(companies)
+            return res.ok(companies, { message: 'Fetch all companies success' })
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Get companies error' })
+        return res.error(500, { message: 'Get companies error' })
     }
 }
 
@@ -17,9 +17,9 @@ async function store(req, res) {
         const company = await new Company({
             name: name
         }).save()
-        return res.status(200).json(company)
+        return res.ok(company, { message: 'Insert company success' })
     } catch (error) {
-        return res.status(500).json({ error: 'Insert new company error' })
+        return res.error(500, { message: 'Insert new company error' })
     }
 }
 
@@ -30,10 +30,10 @@ async function show(req, res) {
             withRelated: ['projects']
         })
         if (company) {
-            return res.status(200).json(company)
+            return res.ok(company, { message: 'Getting company success' })
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Getting company error', error })
+        return res.error(500, { message: 'Getting company error' })
     }
 }
 
@@ -46,10 +46,9 @@ async function update(req, res) {
             company.set({ name: name })
             return company.save()
         })
-        return res.status(200).json(companies)
-
+        return res.ok(companies, { message: 'Update success' })
     } catch (error) {
-        return res.status(500).json({ error: 'Update company error' })
+        return res.error(500, { message: 'Update company error' })
     }
 }
 
@@ -57,9 +56,9 @@ async function destroy(req, res) {
     try {
         const id = req.params.id
         await new Company({ id: id }).destroy()
-        return res.status(200).json({ message: 'Company destroyed' })
+        return res.ok(id, { message: 'Company destroyed' })
     } catch (error) {
-        return res.status(500).json({ message: 'Destroy company error' })
+        return res.error(500, { message: error.message })
     }
 }
 

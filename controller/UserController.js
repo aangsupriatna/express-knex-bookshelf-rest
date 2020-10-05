@@ -25,12 +25,12 @@ async function store(req, res) {
             password: password,
             role: 'member'
         }).save()
-        return res.ok(user, { message: 'New user added' })
+        return res.ok(user, { message: 'Add user success' })
     } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
             return res.error(401, { message: 'User already exists' })
         } else {
-            return res.error(401, { message: 'Insert new user error' })
+            return res.error(401, { message: 'Add user error' })
         }
     }
 }
@@ -45,7 +45,7 @@ async function show(req, res) {
             return res.ok(user, { message: 'Fetch user success' })
         }
     } catch (error) {
-        return res.error(400, { message: 'Getting user error' })
+        return res.error(400, { message: 'Fetch user error' })
     }
 }
 
@@ -66,7 +66,7 @@ async function update(req, res) {
             })
             return user.save()
         })
-        return res.ok(user, { message: 'User updated' })
+        return res.ok(user, { message: 'Update user success' })
     } catch (error) {
         return res.error(400, { message: 'Update user error' })
     }

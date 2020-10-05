@@ -11,22 +11,23 @@ async function signIn(req, res) {
                         id: user.get('id'),
                         role: user.get('role')
                     }, process.env.JWT_SECRET, { expiresIn: '1d' })
-                    return res.cookie('token', token, {
+                    res.cookie('token', token, {
                         secure: false,
                         httpOnly: true,
-                    }).json({ message: 'User authenticated', token: token })
+                    })
+                    return res.ok(token, { message: 'User authenticated' })
                 } else {
-                    return res.status(401).json({ error: 'Wrong password' })
+                    return res.error(401, { message: 'Wrong password' })
                 }
             }).catch(error => {
                 if (error.message == 'EmptyResponse') {
-                    return res.status(401).json({ error: 'User not found' })
+                    return res.error(401, { message: 'User not found' })
                 } else {
-                    throw new Error(error)
+                    return res.error(401, { message: error })
                 }
             })
     } catch (error) {
-        return res.status(401).json({ error: 'Signin error', error })
+        return res.error(401, { message: 'Signin error' })
     }
 }
 
@@ -35,7 +36,7 @@ async function signUp(req, res) {
         const { username, email, password, password2 } = req.body
 
         if (password != password2) {
-            return res.status(401).json({ error: 'Password not match' })
+            return res.error(401, { message: 'Password not match' })
         }
 
         const user = await new User({
@@ -48,9 +49,9 @@ async function signUp(req, res) {
         return res.status(200).json(user)
     } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({ error: 'User already exists' })
+            return res.error(401, { message: 'User already exists' })
         } else {
-            return res.status(400).json({ error: 'Signup error' })
+            return res.error(401, { message: 'Signup error' })
         }
     }
 }
@@ -63,7 +64,7 @@ async function signOut(req, res) {
                 message: 'Token destroyed'
             })
     } catch (error) {
-        return res.status(400).json({ error: 'Signout error' })
+        return res.error(500, { message: error.message })
     }
 }
 

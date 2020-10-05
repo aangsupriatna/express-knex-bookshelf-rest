@@ -6,10 +6,10 @@ async function get(req, res) {
             withRelated: ['company']
         })
         if (projects) {
-            return res.status(200).json(projects)
+            return res.ok(projects, { message: 'Fetch all projects success' })
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Get projects error', error })
+        return res.error(500, { message: 'Fetch all projects error' })
     }
 }
 
@@ -20,9 +20,9 @@ async function store(req, res) {
             company_id: company_id,
             name: name
         }).save()
-        return res.status(200).json(project)
+        return res.ok(project, { message: 'Add project success' })
     } catch (error) {
-        return res.status(500).json({ error: 'Insert new project error' })
+        return res.error(500, { message: 'Add project error' })
     }
 }
 
@@ -34,10 +34,10 @@ async function show(req, res) {
             withRelated: ['company']
         })
         if (project) {
-            return res.status(200).json(project)
+            return res.ok(project, { message: 'Fetch project success' })
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Getting project error', error })
+        return res.error(500, { message: 'Fetch project error' })
     }
 }
 
@@ -50,10 +50,10 @@ async function update(req, res) {
             project.set({ name: name })
             return project.save()
         })
-        return res.status(200).json(projects)
+        return res.ok(projects, { message: 'Update project success' })
 
     } catch (error) {
-        return res.status(500).json({ error: 'Update project error' })
+        return res.error(500, { message: 'Update project error' })
     }
 }
 
@@ -61,9 +61,9 @@ async function destroy(req, res) {
     try {
         const id = req.params.id
         await new Project({ id: id }).destroy()
-        return res.status(200).json({ message: 'project destroyed' })
+        return res.ok(id, { message: 'Project destroyed success' })
     } catch (error) {
-        return res.status(500).json({ message: 'Destroy project error' })
+        return res.error(500, { message: error.message })
     }
 }
 
