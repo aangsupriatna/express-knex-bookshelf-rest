@@ -3,7 +3,7 @@ const Project = require('../models/ProjectModel')
 async function get(req, res) {
     try {
         const projects = await Project.fetchAll({
-            withRelated: ['company']
+            withRelated: ['companies']
         })
         if (projects) {
             return res.ok(projects, { message: 'Fetch all projects success' })
@@ -31,7 +31,7 @@ async function show(req, res) {
         const id = req.params.id
         const project = await new Project({ id: id }).fetch({
             debug: true,
-            withRelated: ['company']
+            withRelated: ['companies']
         })
         if (project) {
             return res.ok(project, { message: 'Fetch project success' })
