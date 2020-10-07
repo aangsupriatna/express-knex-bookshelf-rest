@@ -3,7 +3,7 @@ const User = require('../models/UserModel')
 
 async function get(req, res) {
     try {
-        const user = await User.fetchAll({ debug: true, withRelated: ['profile'] })
+        const user = await User.fetchAll({ withRelated: ['book', 'profile'] })
         if (user) {
             return res.ok(user, { message: 'Fetch all users success' })
         }
@@ -39,7 +39,7 @@ async function show(req, res) {
     try {
         const id = req.params.id
         const user = await new User({ id: id }).fetch({
-            withRelated: ['profile']
+            withRelated: ['book', 'profile']
         })
         if (user) {
             return res.ok(user, { message: 'Fetch user success' })

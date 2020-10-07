@@ -1,17 +1,19 @@
 const bookshelf = require('../bookshelf')
-const Page = require('./PageModel')
-const Summary = require('./SummaryModel')
 
-const Book = bookshelf.model('BookModel', {
+const Book = bookshelf.model('Book', {
     tableName: 'books',
     hasTimestamps: true,
 
+    user() {
+        return this.belongsToMany('User', 'books_users')
+    },
+
     pages() {
-        return this.hasMany(Page)
+        return this.hasMany('Page', 'book_id')
     },
 
     summary() {
-        return this.hasOne(Summary)
+        return this.hasOne('Summary', 'book_id')
     }
 })
 

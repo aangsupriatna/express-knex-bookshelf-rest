@@ -9,7 +9,10 @@
     "private": true,
     "scripts": {
         "start": "node app.js",
-        "dev": "nodemon app.js"
+        "dev": "nodemon app.js",
+        "db:migrate": "yarn knex migrate:latest",
+        "db:down": "yarn knex migrate:rollback",
+        "db:seed": "yarn knex seed:run"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",
@@ -24,7 +27,8 @@
         "knex": "^0.21.6",
         "moment": "^2.29.0",
         "mysql": "^2.18.1",
-        "objection": "^2.2.3"
+        "objection": "^2.2.3",
+        "uuid": "^8.3.1"
     },
     "devDependencies": {
         "nodemon": "^2.0.4"

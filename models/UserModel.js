@@ -8,7 +8,11 @@ const User = bookshelf.model('User', {
     hidden: ['password'],
 
     profile() {
-        return this.hasOne(UserProfile)
+        return this.hasOne('UserProfile')
+    },
+
+    book() {
+        return this.belongsToMany('Book', 'books_users')
     },
 
     initialize() {

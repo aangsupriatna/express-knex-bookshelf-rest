@@ -3,9 +3,11 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const helmet = require("helmet")
-const response = require('./middleware/response')
+const helmet = require('helmet')
+const customResponse = require('./middleware/response')
 const routes = require('./routes')
+
+app.disable('x-powered-by')
 
 //middleware
 app.use(bodyParser.urlencoded({
@@ -14,7 +16,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(helmet())
-app.use(response())
+app.use(customResponse())
+
 //routes
 app.use('/v1', routes)
 

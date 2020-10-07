@@ -1,12 +1,11 @@
 const bookshelf = require('../bookshelf')
-const User = require('./UserModel')
 
 const UserProfile = bookshelf.model('UserProfile', {
-    tableName: 'user_profiles',
+    tableName: 'users_profile',
     hasTimestamps: true,
 
     user() {
-        return this.belongsTo(User)
+        return this.belongsTo('User', 'user_id')
     }
 })
 

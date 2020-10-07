@@ -2,7 +2,7 @@ const Summary = require('../models/SummaryModel')
 
 async function get(req, res) {
     try {
-        const summaries = await Summary.fetchAll()
+        const summaries = await Summary.fetchAll({ withRelated: ['book'] })
         return res.ok(summaries, { message: 'Fetch summaries success' })
     } catch (error) {
         return res.error(500, { message: 'Fetch summaries error' })

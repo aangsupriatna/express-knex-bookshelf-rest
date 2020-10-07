@@ -1,12 +1,11 @@
 const bookshelf = require('../bookshelf')
-const Book = require('./BookModel')
 
-const Page = bookshelf.model('PageModel', {
+const Page = bookshelf.model('Page', {
     tableName: 'pages',
     hasTimestamps: true,
 
     book() {
-        return this.belongsTo(Book)
+        return this.belongsTo('Book', 'book_id')
     }
 })
 
