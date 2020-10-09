@@ -5,7 +5,7 @@ const Summary = bookshelf.model('Summary', {
     hasTimestamps: true,
 
     book() {
-        return this.belongsTo('Page', 'book_id')
+        return this.belongsTo('Book', 'book_id')
     }
 })
 

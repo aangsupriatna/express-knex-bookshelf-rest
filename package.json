@@ -10,14 +10,20 @@
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js",
+        "pm2:dev": "pm2 start app.js --name restapiserver --watch --env development",
+        "pm2:prod": "pm2 start app.js --name restapiserver --env production",
+        "pm2:stop": "pm2 stop app.js restapiserver",
+        "pm2:restart": "pm2 restart app.js restapiserver",
         "db:migrate": "yarn knex migrate:latest",
         "db:down": "yarn knex migrate:rollback",
         "db:seed": "yarn knex seed:run"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",
+        "bluebird": "^3.7.2",
         "body-parser": "^1.19.0",
         "bookshelf": "^1.2.0",
+        "checkit": "^0.7.0",
         "consola": "^2.15.0",
         "cookie-parser": "^1.4.5",
         "dotenv": "^8.2.0",
@@ -28,6 +34,7 @@
         "moment": "^2.29.0",
         "mysql": "^2.18.1",
         "objection": "^2.2.3",
+        "pm2": "^4.5.0",
         "uuid": "^8.3.1"
     },
     "devDependencies": {
