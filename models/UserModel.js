@@ -25,7 +25,9 @@ const User = bookshelf.model('User', {
 
     hashPassword: (model) => {
         if (model.get('password')) {
-            return model.set({ password: bcrypt.hashSync(model.get('password'), 10) })
+            return model.set({
+                password: bcrypt.hashSync(model.get('password'), 10)
+            })
         }
     }
 },
