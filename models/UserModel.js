@@ -64,6 +64,12 @@ const User = bookshelf.model('User', {
                     })
                     return user.save()
                 })
+        }),
+
+        whoami: Promise.method(async (id) => {
+            const user = await new User({ id })
+                .fetch()
+            return user
         })
     }
 )

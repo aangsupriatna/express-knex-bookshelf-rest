@@ -40,6 +40,19 @@ async function signUp(req, res) {
         })
 }
 
+async function whoAmI(req, res) {
+    User.whoami(req.user.id)
+        .then((user) => {
+            return res.ok(user, {
+                message: `Hi ${user.get('username')} This is yours`
+            })
+        }).catch((error) => {
+            return res.error(500, {
+                message: `Error occured when fetching your profile`
+            })
+        })
+}
+
 async function signOut(req, res) {
     return res.status(200)
         .clearCookie('token')
@@ -51,5 +64,6 @@ async function signOut(req, res) {
 module.exports = {
     signIn,
     signUp,
-    signOut
+    signOut,
+    whoAmI
 }
