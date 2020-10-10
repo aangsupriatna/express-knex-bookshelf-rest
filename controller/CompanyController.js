@@ -36,9 +36,10 @@ async function store(req, res) {
 async function show(req, res) {
     try {
         const id = req.params.id
-        const company = await new Company({ id: id }).fetch({
-            withRelated: ['projects']
-        })
+        const company = await new Company({ id: id })
+            .fetch({
+                withRelated: ['projects']
+            })
         if (company) {
             return res.ok(company, {
                 message: 'Getting company success'
@@ -56,7 +57,8 @@ async function update(req, res) {
         const id = req.params.id
         const { name } = req.body
 
-        const companies = await Company.where({ id: id }).fetch()
+        const companies = await Company.where({ id: id })
+            .fetch()
             .then(company => {
                 company.set({ name: name })
                 return company.save()

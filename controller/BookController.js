@@ -1,82 +1,97 @@
 const Book = require('../models/BookModel')
-const Company = require('../models/CompanyModel')
 
 async function get(req, res) {
-    try {
-        const books = await Book.fetchAll({
-            withRelated: ['user', 'pages', 'summary']
-        })
+    await Book.fetchAll({
+        withRelated: [
+            'user',
+            'pages',
+            'summary'
+        ]
+    }).then((books) => {
         return res.ok(books, {
             message: 'Fetch books success'
         })
-    } catch (error) {
+    }).catch((error) => {
         return res.error(500, {
             message: 'Fetch books error', error
         })
-    }
+    })
 }
 
 async function store(req, res) {
-    try {
-        const { user_id, name } = req.body
+    const { user_id, name } = req.body
 
-        const book = await new Book({ name: name }).save()
-        book.user().attach(user_id)
-        return res.ok(book, {
-            message: 'Add new book success'
+    await new Book({ name })
+        .save()
+        .then((book) => {
+            book.user()
+                .attach(user_id)
+            return res.ok(book, {
+                message: 'Insert new book success'
+            })
+        }).catch((error) => {
+            return res.error(500, {
+                message: 'Add new book error', error
+            })
         })
-    } catch (error) {
-        return res.error(500, {
-            message: 'Add new book error', error
-        })
-    }
 }
 
 async function show(req, res) {
-    try {
-        const id = req.params.id
+    const id = req.params.id
 
-        const book = await Book.where({ id: id }).fetch({
-            withRelated: ['user', 'pages', 'summary']
-        })
+    await Book.where({ id: id }).fetch({
+        withRelated: [
+            'user',
+            'pages',
+            'summary'
+        ]
+    }).then((book) => {
         return res.ok(book, {
             message: 'Fetch book success'
         })
-    } catch (error) {
+    }).catch((error) => {
         return res.error(500, {
             message: 'Fetch book error', error
         })
-    }
+    })
 }
 
 async function update(req, res) {
-    try {
-        const id = req.params.id
-        const { user_id, name } = req.body
-        const book = await Book.where({ id: id }).fetch()
-        book.attach(user_id)
-        return res.ok(book, {
-            message: 'Update book success'
+    const id = req.params.id
+
+    const { user_id, name } = req.body
+    const book = await new Book({ id: id })
+        .fetch()
+        .then((book) => {
+            book.set({
+                name: name
+            })
+            book.user()
+                .attach(user_id)
+            book.save()
+            return res.ok(book, {
+                message: 'Update book success'
+            })
+        }).catch((error) => {
+            return res.error(500, {
+                message: 'Update book error', error
+            })
         })
-    } catch (error) {
-        return res.error(500, {
-            message: 'Update book error', error
-        })
-    }
 }
 
 async function destroy(req, res) {
-    try {
-        const id = req.params.id
-        await new Book({ id: id }).destroy()
-        return res.ok(id, {
-            message: 'Destroy book success'
+    const id = req.params.id
+    await new Book({ id: id })
+        .destroy()
+        .then((book) => {
+            return res.ok(id, {
+                message: 'Book destroyed'
+            })
+        }).catch((error) => {
+            return res.error(400, {
+                message: error.message
+            })
         })
-    } catch (error) {
-        return res.error(500, {
-            message: 'Destroy book error', error
-        })
-    }
 }
 module.exports = {
     get,
