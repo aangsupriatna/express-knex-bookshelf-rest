@@ -8,19 +8,30 @@ async function signIn(req, res) {
         const token = jwt.sign({
             id: user.get('id'),
             role: user.get('role')
-        }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        }, process.env.JWT_SECRET, {
+            expiresIn: '1Y'
+        })
         res.cookie('token', token, {
             secure: false,
             httpOnly: true,
         })
-        return res.ok(user, { message: 'Login success' })
+        return res.ok(user, {
+            message: 'Login success'
+        })
     }).catch((error) => {
-        return res.error(401, { message: 'Login error' })
+        return res.error(401, {
+            message: error
+        })
     })
 }
 
 async function signUp(req, res) {
-    const { username, email, password, password2 } = req.body
+    const {
+        username,
+        email,
+        password,
+        password2
+    } = req.body
 
     User.signup(username, email, password, password2)
         .then((user) => {
@@ -28,15 +39,9 @@ async function signUp(req, res) {
                 message: 'Signup success'
             })
         }).catch((error) => {
-            if (error.code == 'ER_DUP_ENTRY') {
-                return res.error(401, {
-                    message: 'User already exists'
-                })
-            } else {
-                return res.error(401, {
-                    message: 'Add user error'
-                })
-            }
+            return res.error(401, {
+                message: error
+            })
         })
 }
 
@@ -48,7 +53,7 @@ async function whoAmI(req, res) {
             })
         }).catch((error) => {
             return res.error(500, {
-                message: `Error occured when fetching your profile`
+                message: error
             })
         })
 }

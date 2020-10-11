@@ -32,29 +32,38 @@ const User = bookshelf.model('User', {
     }
 },
     {
-        signin: Promise.method((username, password) => {
+        signin: Promise.method(async (username, password) => {
             return new User({ username })
                 .fetch()
                 .tap(async (user) => {
                     const valid = await bcrypt.compareSync(password, user.get('password'))
-                    if (!valid) throw new Error('Invalid password')
-                    return valid
+                    if (!valid) {
+                        return Promise.reject('Invalid password')
+                    }
                 })
         }),
 
         signup: Promise.method((username, email, password, password2) => {
-            if (password != password2) throw new Error('Password not match')
+            if (password != password2) {
+                return Promise.reject('Password not match')
+            }
             return new User({
                 username,
                 email,
                 password,
                 role: 'member'
             }).save()
+                .catch((error) => {
+                    return Promise.reject(error)
+                })
         }),
 
         update: Promise.method(async (id, username, email, password, password2, role) => {
-            if (password != password2) throw new Error('Password not match')
-            await new User({ id: id }).fetch()
+            if (password != password2) {
+                return Promise.reject('Password not match')
+            }
+
+            return await new User({ id: id }).fetch()
                 .then(user => {
                     user.set({
                         username: username,
@@ -67,9 +76,13 @@ const User = bookshelf.model('User', {
         }),
 
         whoami: Promise.method(async (id) => {
-            const user = await new User({ id })
+            return await new User({ id })
                 .fetch()
-            return user
+                .then((user) => {
+                    return Promise.resolve(user)
+                }).catch((error) => {
+                    return Promise.reject('Who are you?')
+                })
         })
     }
 )

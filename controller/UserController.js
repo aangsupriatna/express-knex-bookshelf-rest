@@ -16,23 +16,22 @@ async function get(req, res) {
 }
 
 async function store(req, res) {
-    const { username, email, password, password2 } = req.body
+    const {
+        username,
+        email,
+        password,
+        password2
+    } = req.body
 
     User.signup(username, email, password, password2)
         .then((user) => {
             return res.ok(user, {
-                message: 'Add user success'
+                message: 'Signup success'
             })
         }).catch((error) => {
-            if (error.code == 'ER_DUP_ENTRY') {
-                return res.error(401, {
-                    message: 'User already exists'
-                })
-            } else {
-                return res.error(401, {
-                    message: 'Add user error'
-                })
-            }
+            return res.error(401, {
+                message: error
+            })
         })
 }
 
@@ -53,13 +52,19 @@ async function show(req, res) {
 
 async function update(req, res) {
     const id = req.params.id
-    const { username, email, password, password2, role } = req.body
+    const {
+        username,
+        email,
+        password,
+        password2,
+        role
+    } = req.body
 
     await User.update(id, username, email, password, password2, role)
         .then((user) => {
             return res.ok(user, { message: 'Update success' })
         }).catch((error) => {
-            return res.error(401, { message: 'Update error', error })
+            return res.error(401, { message: error })
         })
 }
 
