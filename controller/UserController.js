@@ -20,10 +20,11 @@ async function store(req, res) {
         username,
         email,
         password,
-        password2
+        password2,
+        attachment_name
     } = req.body
 
-    User.signup(username, email, password, password2)
+    User.signup(username, email, password, password2, attachment_name)
         .then((user) => {
             return res.ok(user, {
                 message: 'Signup success'

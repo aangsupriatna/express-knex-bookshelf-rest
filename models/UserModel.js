@@ -1,5 +1,6 @@
 const Promise = require('bluebird')
 const bookshelf = require('../bookshelf')
+const Attachment = require('./AttachmentModel')
 const bcrypt = Promise.promisifyAll(require('bcrypt'))
 
 const UserProfile = require('./UserProfileModel')
@@ -23,6 +24,10 @@ const User = bookshelf.model('User', {
         return this.belongsToMany('Book', 'books_users')
     },
 
+    attachments() {
+        return this.morphMany('Attachment', 'imageable')
+    },
+
     hashPassword: (model) => {
         if (model.get('password')) {
             return model.set({
@@ -43,7 +48,7 @@ const User = bookshelf.model('User', {
                 })
         }),
 
-        signup: Promise.method((username, email, password, password2) => {
+        signup: Promise.method((username, email, password, password2, attachment_name) => {
             if (password != password2) {
                 return Promise.reject('Password not match')
             }
@@ -53,6 +58,15 @@ const User = bookshelf.model('User', {
                 password,
                 role: 'member'
             }).save()
+                .then(function (user) {
+                    const attachment = new Attachment({
+                        name: user.get('username'),
+                        imageable_id: user.get('id'),
+                        imageable_type: 'user'
+                    })
+
+                    return [attachment.save(), user]
+                })
                 .catch((error) => {
                     return Promise.reject(error)
                 })

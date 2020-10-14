@@ -14,6 +14,10 @@ const Book = bookshelf.model('Book', {
 
     summary() {
         return this.hasOne('Summary', 'book_id')
+    },
+
+    attachments() {
+        return this.morphMany('Attachment', 'imageable')
     }
 })
 
