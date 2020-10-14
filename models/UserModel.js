@@ -24,8 +24,8 @@ const User = bookshelf.model('User', {
         return this.belongsToMany('Book', 'books_users')
     },
 
-    attachments() {
-        return this.morphMany('Attachment', 'imageable')
+    attachment() {
+        return this.morphMany('Attachment', 'attachable')
     },
 
     hashPassword: (model) => {
@@ -61,8 +61,8 @@ const User = bookshelf.model('User', {
                 .then(function (user) {
                     const attachment = new Attachment({
                         name: user.get('username'),
-                        imageable_id: user.get('id'),
-                        imageable_type: 'user'
+                        attachable_id: user.get('id'),
+                        attachable_type: 'users'
                     })
 
                     return [attachment.save(), user]

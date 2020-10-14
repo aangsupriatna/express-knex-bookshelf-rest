@@ -4,8 +4,8 @@ const Attachment = bookshelf.model('Attachment', {
     tableName: 'attachments',
     hasTimestamps: true,
 
-    imageable() {
-        return this.morphto('imageable', 'User', 'Book')
+    attachable() {
+        return this.morphTo('attachable', 'User')
     }
 })
 

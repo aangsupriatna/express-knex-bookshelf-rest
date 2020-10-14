@@ -3,14 +3,14 @@ const User = require('../models/UserModel')
 
 async function get(req, res) {
     await User.fetchAll({
-        withRelated: ['book', 'profile']
+        withRelated: ['book', 'profile', 'attachment']
     }).then((user) => {
         return res.ok(user, {
             message: 'Fetch all users success'
         })
     }).catch((error) => {
         return res.error(500, {
-            message: 'Fetch all users error'
+            message: error
         })
     })
 }
@@ -20,11 +20,10 @@ async function store(req, res) {
         username,
         email,
         password,
-        password2,
-        attachment_name
+        password2
     } = req.body
 
-    User.signup(username, email, password, password2, attachment_name)
+    User.signup(username, email, password, password2)
         .then((user) => {
             return res.ok(user, {
                 message: 'Signup success'
